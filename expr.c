@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void Expr_print(Expr *expr)
 {
 	switch (expr->type) {
@@ -27,19 +28,21 @@ void Expr_print(Expr *expr)
 void Expr_drop(Expr *expr)
 {
 	switch (expr->type) {
+	case FREE_VAR_EXPR:
+	case BOUND_VAR_EXPR:
+		free(expr);
+		break;
 	case APPL_EXPR:
 		Expr_drop(expr->as.appl.left);
 		Expr_drop(expr->as.appl.right);
+		free(expr);
 		break;
 	case LAMBDA_EXPR:
 		Expr_drop(expr->as.lambda.body);
+		free(expr);
 		break;
-	case FREE_VAR_EXPR: case BOUND_VAR_EXPR:
-		// noop
 	}
-	free(expr);
 }
-
 
 static void sub_free_variable(Expr *expr, int var)
 {
@@ -47,37 +50,20 @@ static void sub_free_variable(Expr *expr, int var)
 	case FREE_VAR_EXPR:
 		if (expr->as.var == var) {
 			expr->type = BOUND_VAR_EXPR;
-			expr->as.var = 0;
+			expr->as.var = 1;
 		}
+		break;
+	case BOUND_VAR_EXPR:
+		expr->as.var += 1;
 		break;
 	case APPL_EXPR:
 		sub_free_variable(expr->as.appl.left, var);
 		sub_free_variable(expr->as.appl.right, var);
 		break;
 	case LAMBDA_EXPR:
+		expr->as.lambda.arg += 1;
 		sub_free_variable(expr->as.lambda.body, var);
 		break;
-	case BOUND_VAR_EXPR:
-		// noop
-	}
-}
-
-static void inc_lambda_args(Expr *expr)
-{
-	switch (expr->type) {
-	case BOUND_VAR_EXPR:
-		expr->as.var += 1;
-		break;
-	case APPL_EXPR:
-		inc_lambda_args(expr->as.appl.left);
-		inc_lambda_args(expr->as.appl.right);
-		break;
-	case LAMBDA_EXPR:
-		expr->as.lambda.arg += 1;
-		inc_lambda_args(expr->as.lambda.body);
-		break;
-	case FREE_VAR_EXPR:
-		// noop
 	}
 }
 
@@ -87,7 +73,6 @@ Expr *Lambda_new(Expr *arg, Expr *body)
 	lambda->type = LAMBDA_EXPR;
 	sub_free_variable(body, arg->as.var);
 	Expr_drop(arg);
-	inc_lambda_args(body);
 	lambda->as.lambda.arg = 1;
 	lambda->as.lambda.body = body;
 	return lambda;
