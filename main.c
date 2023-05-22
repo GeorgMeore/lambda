@@ -2,6 +2,8 @@
 
 #include "expr.h"
 #include "input.h"
+#include "iter.h"
+#include "parse.h"
 
 
 int main()
@@ -11,17 +13,14 @@ int main()
 		if (!input) {
 			break;
 		}
-		printf("Got input: %s\n", input);
-		Expr *expr = Lambda_new(
-			Var_new('c'),
-			Appl_new(
-				Lambda_new(Var_new('x'), Var_new('x')),
-				Var_new('y')
-			)
-		);
+		CharIterator iter = input;
+		Expr *expr = parse(&iter);
+		if (!expr) {
+			continue;
+		}
 		Expr_print(expr);
-		Expr_drop(expr);
 		putchar('\n');
+		Expr_drop(expr);
 	}
 	return 0;
 }

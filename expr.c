@@ -15,12 +15,18 @@ void Expr_print(Expr *expr)
 		break;
 	case APPL_EXPR:
 		Expr_print(expr->as.appl.left);
-		Expr_print(expr->as.appl.right);
+		if (expr->as.appl.right->type == APPL_EXPR) {
+			putchar('(');
+			Expr_print(expr->as.appl.right);
+			putchar(')');
+		} else {
+			Expr_print(expr->as.appl.right);
+		}
 		break;
 	case LAMBDA_EXPR:
 		printf("(\\%d.", expr->as.lambda.arg);
 		Expr_print(expr->as.lambda.body);
-		printf(")");
+		putchar(')');
 		break;
 	}
 }
