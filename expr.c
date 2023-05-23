@@ -119,6 +119,12 @@ static void Expr_sub_free(Expr *expr, int var)
 	}
 }
 
+static void Expr_replace(Expr *dst, Expr *src)
+{
+	*dst = *src;
+	free(src); // free only toplevel node
+}
+
 static void Expr_sub_bound(Expr *expr, int var, Expr *val)
 {
 	switch (expr->type) {
@@ -127,8 +133,7 @@ static void Expr_sub_bound(Expr *expr, int var, Expr *val)
 	case BOUND_VAR_EXPR:
 		if (expr->as.var == var) {
 			Expr *copy = Expr_copy(val);
-			*expr = *copy;
-			free(copy);
+			Expr_replace(expr, copy);
 		}
 		break;
 	case APPL_EXPR:
@@ -148,23 +153,14 @@ static void Expr_sub_bound(Expr *expr, int var, Expr *val)
 	}
 }
 
-Expr *Expr_beta_reduce(Expr *expr)
+void Expr_beta_reduce(Expr *redex)
 {
-	if (expr->type != APPL_EXPR) {
-		return NULL;
-	}
-	if (expr->as.appl.left->type != LAMBDA_EXPR) {
-		return NULL;
-	}
-	Expr *lambda = Expr_copy(expr->as.appl.left);
-	Expr *arg = Expr_copy(expr->as.appl.right);
-	Expr_sub_bound(lambda, 1, arg);
-	Expr_dec_args(lambda, 1);
-	Expr *body = lambda->as.lambda.body;
-	*lambda = *body;
-	free(body);
+	Expr *lambda = redex->as.appl.left, *arg = redex->as.appl.right;
+	Expr_sub_bound(lambda, lambda->as.lambda.arg, arg);
 	Expr_drop(arg);
-	return lambda;
+	Expr_dec_args(lambda, lambda->as.lambda.arg);
+	Expr_replace(lambda, lambda->as.lambda.body);
+	Expr_replace(redex, lambda);
 }
 
 Expr *Lambda_new(Expr *arg, Expr *body)

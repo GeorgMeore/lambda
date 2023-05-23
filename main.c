@@ -5,6 +5,7 @@
 #include "input.h"
 #include "scanner.h"
 #include "parse.h"
+#include "reduce.h"
 
 
 int main()
@@ -20,15 +21,19 @@ int main()
 		}
 		Scanner scanner = input;
 		Expr *expr = parse(&scanner);
-		while (expr) {
+		if (!expr) {
+			continue;
+		}
+		for (;;) {
 			if (tty) {
 				fprintf(stderr, "- ");
 			}
 			Expr_println(expr);
-			Expr *reduced = Expr_beta_reduce(expr);
-			Expr_drop(expr);
-			expr = reduced;
+			if (!reduce(expr)) {
+				break;
+			}
 		}
+		Expr_drop(expr);
 	}
 	return 0;
 }
