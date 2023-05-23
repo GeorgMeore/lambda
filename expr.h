@@ -32,11 +32,11 @@ struct Expr {
 };
 
 void Expr_print(Expr *expr);
-
 Expr *Lambda_new(Expr *arg, Expr *body);
 Expr *Appl_new(Expr *left, Expr *right);
 Expr *Var_new(int variable);
-
+Expr *Expr_copy(Expr *expr);
 void Expr_drop(Expr *expr);
+Expr *Expr_beta_reduce(Expr *expr);
 
 #endif // EXPR_INCLUDED
