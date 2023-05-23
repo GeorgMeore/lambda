@@ -3,7 +3,7 @@
 
 #include "expr.h"
 #include "input.h"
-#include "iter.h"
+#include "scanner.h"
 #include "parse.h"
 
 
@@ -18,8 +18,8 @@ int main()
 		if (!input) {
 			break;
 		}
-		CharIterator iter = input;
-		Expr *expr = parse(&iter);
+		Scanner scanner = input;
+		Expr *expr = parse(&scanner);
 		while (expr) {
 			if (tty) {
 				fprintf(stderr, "- ");

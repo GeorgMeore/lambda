@@ -3,22 +3,23 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "iter.h"
+#include "scanner.h"
 
 
-static Expr *parse_application(CharIterator *iter);
-static Expr *parse_term(CharIterator *iter);
-static Expr *parse_group(CharIterator *iter);
+// subexpression parsers
+static Expr *parse_application(Scanner *scanner);
+static Expr *parse_term(Scanner *scanner);
+static Expr *parse_group(Scanner *scanner);
 
 // EXPR ::= APPLICATION '\0'
-Expr *parse(CharIterator *iter)
+Expr *parse(Scanner *scanner)
 {
-	Expr *expr = parse_application(iter);
+	Expr *expr = parse_application(scanner);
 	if (!expr) {
 		return NULL;
 	}
-	if (CharIterator_peek(iter) != 0) {
-		fprintf(stderr, "error: unexpected character: '%c'\n", CharIterator_peek(iter));
+	if (Scanner_peek(scanner) != 0) {
+		fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
 		Expr_drop(expr);
 		return NULL;
 	}
@@ -26,14 +27,14 @@ Expr *parse(CharIterator *iter)
 }
 
 // TERM | APPLICATION TERM
-static Expr *parse_application(CharIterator *iter)
+static Expr *parse_application(Scanner *scanner)
 {
-	Expr *left = parse_term(iter);
+	Expr *left = parse_term(scanner);
 	if (!left) {
 		return NULL;
 	}
-	while (isalpha(CharIterator_peek(iter)) || CharIterator_peek(iter) == '(') {
-		Expr *right = parse_term(iter);
+	while (isalpha(Scanner_peek(scanner)) || Scanner_peek(scanner) == '(') {
+		Expr *right = parse_term(scanner);
 		if (!right) {
 			Expr_drop(left);
 			return NULL;
@@ -45,17 +46,16 @@ static Expr *parse_application(CharIterator *iter)
 
 // TERM   ::= GROUP | LAMBDA | VAR
 // LAMBDA ::= VAR '.' APPLICATION
-static Expr *parse_term(CharIterator *iter)
+static Expr *parse_term(Scanner *scanner)
 {
-	char next = CharIterator_peek(iter);
-	if (next == '(') {
-		return parse_group(iter);
+	if (Scanner_peek(scanner) == '(') {
+		return parse_group(scanner);
 	}
-	if (isalpha(next)) {
-		Expr *expr = Var_new(CharIterator_next(iter));
-		if (CharIterator_peek(iter) == '.') {
-			CharIterator_next(iter);
-			Expr *body = parse_application(iter);
+	if (isalpha(Scanner_peek(scanner))) {
+		Expr *expr = Var_new(Scanner_next(scanner));
+		if (Scanner_peek(scanner) == '.') {
+			Scanner_next(scanner);
+			Expr *body = parse_application(scanner);
 			if (!body) {
 				Expr_drop(expr);
 				return NULL;
@@ -64,19 +64,19 @@ static Expr *parse_term(CharIterator *iter)
 		}
 		return expr;
 	}
-	fprintf(stderr, "error: unexpected character: '%c'\n", next);
+	fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
 	return NULL;
 }
 
 // GROUP ::= '(' APPLICATION ')'
-static Expr *parse_group(CharIterator *iter)
+static Expr *parse_group(Scanner *scanner)
 {
-	CharIterator_next(iter);
-	Expr *expr = parse_application(iter);
+	Scanner_next(scanner);
+	Expr *expr = parse_application(scanner);
 	if (!expr) {
 		return NULL;
 	}
-	if (CharIterator_next(iter) != ')') {
+	if (Scanner_next(scanner) != ')') {
 		fprintf(stderr, "error: ')' expected\n");
 		Expr_drop(expr);
 		return NULL;
