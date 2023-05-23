@@ -1,9 +1,9 @@
 #ifndef PARSE_INCLUDED
 #define PARSE_INCLUDED
 
-#include "iter.h"
+#include "scanner.h"
 #include "expr.h"
 
-Expr *parse(CharIterator *iter);
+Expr *parse(Scanner *scanner);
 
 #endif // PARSE_INCLUDED
