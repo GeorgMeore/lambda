@@ -18,9 +18,12 @@ int main()
 		if (!expr) {
 			continue;
 		}
-		Expr_print(expr);
-		putchar('\n');
-		Expr_drop(expr);
+		while (expr) {
+			Expr_print(expr);
+			Expr *reduced = Expr_beta_reduce(expr);
+			Expr_drop(expr);
+			expr = reduced;
+		}
 	}
 	return 0;
 }
