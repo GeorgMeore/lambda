@@ -24,7 +24,7 @@ int main()
 			if (tty) {
 				fprintf(stderr, "- ");
 			}
-			Expr_print(expr);
+			Expr_println(expr);
 			Expr *reduced = Expr_beta_reduce(expr);
 			Expr_drop(expr);
 			expr = reduced;
