@@ -33,7 +33,7 @@ static Expr *parse_application(Scanner *scanner)
 	if (!left) {
 		return NULL;
 	}
-	while (isalpha(Scanner_peek(scanner)) || Scanner_peek(scanner) == '(') {
+	while (islower(Scanner_peek(scanner)) || Scanner_peek(scanner) == '(') {
 		Expr *right = parse_term(scanner);
 		if (!right) {
 			Expr_drop(left);
@@ -51,18 +51,18 @@ static Expr *parse_term(Scanner *scanner)
 	if (Scanner_peek(scanner) == '(') {
 		return parse_group(scanner);
 	}
-	if (isalpha(Scanner_peek(scanner))) {
-		Expr *expr = Var_new(Scanner_next(scanner));
-		if (Scanner_peek(scanner) == '.') {
-			Scanner_next(scanner);
-			Expr *body = parse_application(scanner);
-			if (!body) {
-				Expr_drop(expr);
-				return NULL;
-			}
-			expr = Lambda_new(expr, body);
+	if (islower(Scanner_peek(scanner))) {
+		Expr *var = Var_new(Scanner_next(scanner));
+		if (Scanner_peek(scanner) != '.') {
+			return var;
 		}
-		return expr;
+		Scanner_next(scanner);
+		Expr *body = parse_application(scanner);
+		if (!body) {
+			Expr_drop(var);
+			return NULL;
+		}
+		return Lambda_new(var, body);
 	}
 	fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
 	return NULL;
