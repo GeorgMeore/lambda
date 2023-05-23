@@ -38,6 +38,6 @@ Expr *Appl_new(Expr *left, Expr *right);
 Expr *Var_new(int variable);
 Expr *Expr_copy(Expr *expr);
 void Expr_drop(Expr *expr);
-Expr *Expr_beta_reduce(Expr *expr);
+void Expr_beta_reduce(Expr *redex);
 
 #endif // EXPR_INCLUDED
