@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-static void Expr_do_print(Expr *expr)
+void Expr_print(Expr *expr)
 {
 	switch (expr->type) {
 	case FREE_VAR_EXPR:
@@ -14,26 +14,26 @@ static void Expr_do_print(Expr *expr)
 		printf("%d", expr->as.var);
 		break;
 	case APPL_EXPR:
-		Expr_do_print(expr->as.appl.left);
+		Expr_print(expr->as.appl.left);
 		if (expr->as.appl.right->type == APPL_EXPR) {
 			putchar('(');
-			Expr_do_print(expr->as.appl.right);
+			Expr_print(expr->as.appl.right);
 			putchar(')');
 		} else {
-			Expr_do_print(expr->as.appl.right);
+			Expr_print(expr->as.appl.right);
 		}
 		break;
 	case LAMBDA_EXPR:
-		printf("(\\%d.", expr->as.lambda.arg);
-		Expr_do_print(expr->as.lambda.body);
+		printf("(%d.", expr->as.lambda.arg);
+		Expr_print(expr->as.lambda.body);
 		putchar(')');
 		break;
 	}
 }
 
-void Expr_print(Expr *expr)
+void Expr_println(Expr *expr)
 {
-	Expr_do_print(expr);
+	Expr_print(expr);
 	putchar('\n');
 }
 

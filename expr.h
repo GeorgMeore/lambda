@@ -32,6 +32,7 @@ struct Expr {
 };
 
 void Expr_print(Expr *expr);
+void Expr_println(Expr *expr);
 Expr *Lambda_new(Expr *arg, Expr *body);
 Expr *Appl_new(Expr *left, Expr *right);
 Expr *Var_new(int variable);
