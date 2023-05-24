@@ -38,7 +38,7 @@ Application is left associative as usual.
 
 `Lambda ::= Variable '.' Term`
 
-Lambdas are defined as a 'Variable' and a `Term` separated by '.'.
+Lambdas are defined as a 'Variable' and a `Term` separated by `.`.
 There is no `λ` or `\` at the beginning.
 
 `Name ::= A | B | ... | Z`
