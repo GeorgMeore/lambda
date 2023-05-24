@@ -2,8 +2,8 @@
 #define PARSE_INCLUDED
 
 #include "scanner.h"
-#include "expr.h"
+#include "node.h"
 
-Expr *parse(Scanner *scanner);
+Node *parse(Scanner *scanner);
 
 #endif // PARSE_INCLUDED

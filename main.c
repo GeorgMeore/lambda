@@ -1,12 +1,34 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "expr.h"
 #include "input.h"
 #include "scanner.h"
 #include "parse.h"
-#include "reduce.h"
+#include "node.h"
+//#include "expr.h"
+//#include "reduce.h"
 
+
+void execute(Node *ast)
+{
+	if (ast->type == DEF_NODE) {
+		printf("definition: ");
+		Node_println(ast);
+	} else if (ast->type == APPL_NODE) {
+		printf("evaluation: ");
+		Node_println(ast);
+		//for (;;) {
+		//	if (tty) {
+		//		fprintf(stderr, "- ");
+		//	}
+		//	Expr_println(expr);
+		//	if (!reduce(expr)) {
+		//		break;
+		//	}
+		//}
+		//Expr_drop(expr);
+	}
+}
 
 int main()
 {
@@ -20,20 +42,12 @@ int main()
 			break;
 		}
 		Scanner scanner = input;
-		Expr *expr = parse(&scanner);
-		if (!expr) {
+		Node *ast = parse(&scanner);
+		if (!ast) {
 			continue;
 		}
-		for (;;) {
-			if (tty) {
-				fprintf(stderr, "- ");
-			}
-			Expr_println(expr);
-			if (!reduce(expr)) {
-				break;
-			}
-		}
-		Expr_drop(expr);
+		execute(ast);
+		Node_drop(ast);
 	}
 	return 0;
 }

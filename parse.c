@@ -4,82 +4,111 @@
 #include <ctype.h>
 
 #include "scanner.h"
+#include "node.h"
 
 
 // subexpression parsers
-static Expr *parse_application(Scanner *scanner);
-static Expr *parse_term(Scanner *scanner);
-static Expr *parse_group(Scanner *scanner);
+static Node *parse_definition(Scanner *scanner);
+static Node *parse_application(Scanner *scanner);
+static Node *parse_lambda(Scanner *scanner);
+static Node *parse_term(Scanner *scanner);
+static Node *parse_group(Scanner *scanner);
 
-// EXPR ::= APPLICATION '\0'
-Expr *parse(Scanner *scanner)
+// AST ::= (APPLICATION | DEFINITION) '\0'
+Node *parse(Scanner *scanner)
 {
-	Expr *expr = parse_application(scanner);
-	if (!expr) {
+	Node *node = NULL;
+	if (isupper(Scanner_peek(scanner)) && Scanner_peeek(scanner) == '=') {
+		node = parse_definition(scanner);
+	} else {
+		node = parse_application(scanner);
+	}
+	if (!node) {
 		return NULL;
 	}
 	if (Scanner_peek(scanner) != 0) {
 		fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
-		Expr_drop(expr);
+		Node_drop(node);
 		return NULL;
 	}
-	return expr;
+	return node;
 }
 
-// TERM | APPLICATION TERM
-static Expr *parse_application(Scanner *scanner)
+// DEFINITION ::= NAME '=' APPLICATION
+Node *parse_definition(Scanner *scanner)
 {
-	Expr *left = parse_term(scanner);
+	Node *name = Node_new(VAR_NODE, Scanner_next(scanner));
+	Scanner_next(scanner); // skip '='
+	Node *value = parse_application(scanner);
+	if (!value) {
+		Node_drop(name);
+		return NULL;
+	}
+	return Node_new(DEF_NODE, name, value);
+}
+
+// APPLICATION ::= TERM | APPLICATION TERM
+static Node *parse_application(Scanner *scanner)
+{
+	Node *left = parse_term(scanner);
 	if (!left) {
 		return NULL;
 	}
-	while (islower(Scanner_peek(scanner)) || Scanner_peek(scanner) == '(') {
-		Expr *right = parse_term(scanner);
+	while (isalpha(Scanner_peek(scanner)) || Scanner_peek(scanner) == '(') {
+		Node *right = parse_term(scanner);
 		if (!right) {
-			Expr_drop(left);
+			Node_drop(left);
 			return NULL;
 		}
-		left = Appl_new(left, right);
+		left = Node_new(APPL_NODE, left, right);
 	}
 	return left;
 }
 
-// TERM   ::= GROUP | LAMBDA | VAR
-// LAMBDA ::= VAR '.' APPLICATION
-static Expr *parse_term(Scanner *scanner)
+// TERM ::= GROUP | NAME | VAR | LAMBDA
+static Node *parse_term(Scanner *scanner)
 {
 	if (Scanner_peek(scanner) == '(') {
 		return parse_group(scanner);
 	}
+	if (isupper(Scanner_peek(scanner))) {
+		return Node_new(VAR_NODE, Scanner_next(scanner));
+	}
 	if (islower(Scanner_peek(scanner))) {
-		Expr *var = Var_new(Scanner_next(scanner));
-		if (Scanner_peek(scanner) != '.') {
-			return var;
+		if (Scanner_peeek(scanner) == '.') {
+			return parse_lambda(scanner);
 		}
-		Scanner_next(scanner);
-		Expr *body = parse_application(scanner);
-		if (!body) {
-			Expr_drop(var);
-			return NULL;
-		}
-		return Lambda_new(var, body);
+		return Node_new(VAR_NODE, Scanner_next(scanner));
 	}
 	fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
 	return NULL;
 }
 
+// LAMBDA ::= VAR '.' APPLICATION
+Node *parse_lambda(Scanner *scanner)
+{
+		Node *var = Node_new(VAR_NODE, Scanner_next(scanner));
+		Scanner_next(scanner); // skip '.'
+		Node *body = parse_application(scanner);
+		if (!body) {
+			Node_drop(var);
+			return NULL;
+		}
+		return Node_new(LAMBDA_NODE, var, body);
+}
+
 // GROUP ::= '(' APPLICATION ')'
-static Expr *parse_group(Scanner *scanner)
+static Node *parse_group(Scanner *scanner)
 {
 	Scanner_next(scanner);
-	Expr *expr = parse_application(scanner);
-	if (!expr) {
+	Node *node = parse_application(scanner);
+	if (!node) {
 		return NULL;
 	}
 	if (Scanner_next(scanner) != ')') {
 		fprintf(stderr, "error: ')' expected\n");
-		Expr_drop(expr);
+		Node_drop(node);
 		return NULL;
 	}
-	return expr;
+	return node;
 }
