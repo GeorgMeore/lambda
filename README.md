@@ -22,7 +22,7 @@ Type `./lambda` to start REPL.
 
 The sytax (at least for now) is fairly simplistic. No spaces are allowed.
 
-`Term ::= Variable | Name | Lambda | Application | '(' Term ')'`
+`Term ::= Variable | Name | Lambda | Application | ( Term )`
 
 A term is either a `Variable` or a `Lambda` or an `Application`.
 You can also use parentheses for grouping.
@@ -36,7 +36,7 @@ Variables are lowercase english letters.
 Application is just two terms written side by side.
 Application is left associative as usual.
 
-`Lambda ::= Variable '.' Term`
+`Lambda ::= Variable . Term`
 
 Lambdas are defined as a 'Variable' and a `Term` separated by `.`.
 There is no `λ` or `\` at the beginning.
@@ -47,7 +47,7 @@ Uppercase english letters can be used to create aliases for terms.
 During the syntactical analysis phase they are just replaced
 by the aliased term.
 
-`Binding ::= Name '=' Term`
+`Binding ::= Name = Term`
 
 You can provide aliases for terms.
 `Term` is not evaluated at the time of aliasing, only the syntactical analysis takes place.
