@@ -16,7 +16,7 @@ $ mk
 
 ## Running.
 
-Type `./lambda` to start REPL.
+Type `./lambda` to start a REPL.
 
 ## Syntax.
 
@@ -59,11 +59,11 @@ S=a
 S=Sb
 ```
 
-## Repl session.
+## REPL session.
 
 You can create bindings and evaluate expressions.
-When an expression is evaluated interpreter shows you
-intermediate expression states during reduction prefixed with `- `.
+When an expression is evaluated,
+the interpreter shows you intermediate expression states prefixed with `- `.
 
 ### Example repl session:
 
