@@ -17,3 +17,8 @@ char Scanner_peek(Scanner *self)
 {
 	return **self;
 }
+
+char Scanner_peeek(Scanner *self)
+{
+	return *(*self + 1);
+}
