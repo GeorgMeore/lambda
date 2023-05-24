@@ -59,7 +59,13 @@ S=a
 S=Sb
 ```
 
-### Some examples:
+## Repl session.
+
+You can create bindings and evaluate expressions.
+When an expression is evaluated interpreter shows you
+intermediate expression states during reduction prefixed with `- `.
+
+### Example repl session:
 
 ```
 > a
@@ -74,4 +80,7 @@ S=Sb
 - (1.1)a
 - a
 > S=x.x
+> Sa
+- (1.1)a
+- a
 ```
