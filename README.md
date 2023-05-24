@@ -50,7 +50,14 @@ by the aliased term.
 `Binding ::= Name '=' Term`
 
 You can provide aliases for terms.
-`Term` is not be evaluated at the time of aliasing, only the syntactical analysis takes place.
+`Term` is not evaluated at the time of aliasing, only the syntactical analysis takes place.
+
+You also need to know that before analyzing `Term` the old value of binding (if there is one) is destroyed.
+That means that you cannot do stuff like that:
+```
+S=a
+S=Sb
+```
 
 ### Some examples:
 
