@@ -43,7 +43,7 @@ There is no `λ` or `\` at the beginning.
 
 `Name ::= A | B | ... | Z`
 
-Uppercase english letters to create aliases for terms.
+Uppercase english letters can be used to create aliases for terms.
 During the syntactical analysis phase they are just replaced
 by the aliased term.
 
