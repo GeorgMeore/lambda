@@ -89,11 +89,10 @@ int main()
 		if (tty) {
 			fprintf(stderr, "> ");
 		}
-		char *input = get_line();
-		if (!input) {
+		Scanner scanner = get_line();
+		if (!scanner) {
 			break;
 		}
-		Scanner scanner = input;
 		Node *ast = parse(&scanner);
 		if (!ast) {
 			continue;
