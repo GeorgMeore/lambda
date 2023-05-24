@@ -10,5 +10,8 @@ PROG=lambda
 $PROG: $OBJ
 	cc -o $target $prereq
 
+# generate dependency list
+<|$CC -MM $SRC
+
 clean:
 	rm -f $OBJ $PROG
