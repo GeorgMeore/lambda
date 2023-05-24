@@ -11,6 +11,9 @@ void Node_print(Node *node)
 	case VAR_NODE:
 		printf("%c", node->as.var);
 		break;
+	case NAME_NODE:
+		printf("%c", node->as.name);
+		break;
 	case APPL_NODE:
 		Node_print(node->as.appl.left);
 		if (node->as.appl.right->type == APPL_NODE) {
@@ -46,6 +49,7 @@ void Node_drop(Node *node)
 {
 	switch (node->type) {
 	case VAR_NODE:
+	case NAME_NODE:
 		break;
 	case APPL_NODE:
 		Node_drop(node->as.appl.left);
@@ -72,6 +76,9 @@ Node *Node_new(NodeType type, ...)
 	switch (type) {
 	case VAR_NODE:
 		node->as.var = va_arg(args, unsigned);
+		break;
+	case NAME_NODE:
+		node->as.name = va_arg(args, unsigned);
 		break;
 	case APPL_NODE:
 		node->as.appl.left = va_arg(args, Node*);

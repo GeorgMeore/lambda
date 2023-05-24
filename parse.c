@@ -37,7 +37,7 @@ Node *parse(Scanner *scanner)
 // DEFINITION ::= NAME '=' APPLICATION
 Node *parse_definition(Scanner *scanner)
 {
-	Node *name = Node_new(VAR_NODE, Scanner_next(scanner));
+	Node *name = Node_new(NAME_NODE, Scanner_next(scanner));
 	Scanner_next(scanner); // skip '='
 	Node *value = parse_application(scanner);
 	if (!value) {
@@ -72,7 +72,7 @@ static Node *parse_term(Scanner *scanner)
 		return parse_group(scanner);
 	}
 	if (isupper(Scanner_peek(scanner))) {
-		return Node_new(VAR_NODE, Scanner_next(scanner));
+		return Node_new(NAME_NODE, Scanner_next(scanner));
 	}
 	if (islower(Scanner_peek(scanner))) {
 		if (Scanner_peeek(scanner) == '.') {

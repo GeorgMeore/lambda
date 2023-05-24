@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 
+// TODO: more readable printout format
 void Expr_print(Expr *expr)
 {
 	switch (expr->type) {
@@ -56,7 +57,7 @@ void Expr_drop(Expr *expr)
 	}
 }
 
-static void Expr_inc_args(Expr *expr, int cutoff)
+static void Expr_inc_args(Expr *expr, unsigned cutoff)
 {
 	switch (expr->type) {
 	case FREE_VAR_EXPR:
@@ -77,7 +78,7 @@ static void Expr_inc_args(Expr *expr, int cutoff)
 	}
 }
 
-static void Expr_dec_args(Expr *expr, int cutoff)
+static void Expr_dec_args(Expr *expr, unsigned cutoff)
 {
 	switch (expr->type) {
 	case FREE_VAR_EXPR:
@@ -98,7 +99,7 @@ static void Expr_dec_args(Expr *expr, int cutoff)
 	}
 }
 
-static void Expr_sub_free(Expr *expr, int var)
+static void Expr_sub_free(Expr *expr, unsigned var)
 {
 	switch (expr->type) {
 	case FREE_VAR_EXPR:
@@ -125,7 +126,7 @@ static void Expr_replace(Expr *dst, Expr *src)
 	free(src); // free only toplevel node
 }
 
-static void Expr_sub_bound(Expr *expr, int var, Expr *val)
+static void Expr_sub_bound(Expr *expr, unsigned var, Expr *val)
 {
 	switch (expr->type) {
 	case FREE_VAR_EXPR:
@@ -184,7 +185,7 @@ Expr *Appl_new(Expr *left, Expr *right)
 	return appl;
 }
 
-Expr *Var_new(int variable)
+Expr *Var_new(unsigned variable)
 {
 	Expr *var = malloc(sizeof(*var));
 	var->type = FREE_VAR_EXPR;
@@ -192,7 +193,7 @@ Expr *Var_new(int variable)
 	return var;
 }
 
-static Expr *Bound_new(int variable)
+static Expr *Bound_new(unsigned variable)
 {
 	Expr *var = malloc(sizeof(*var));
 	var->type = BOUND_VAR_EXPR;
@@ -200,7 +201,7 @@ static Expr *Bound_new(int variable)
 	return var;
 }
 
-static Expr *BoundLambda_new(int arg, Expr *body)
+static Expr *BoundLambda_new(unsigned arg, Expr *body)
 {
 	Expr *lambda = malloc(sizeof(*lambda));
 	lambda->type = LAMBDA_EXPR;

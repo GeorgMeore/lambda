@@ -6,6 +6,7 @@ typedef enum {
 	APPL_NODE,
 	VAR_NODE,
 	DEF_NODE,
+	NAME_NODE,
 } NodeType;
 
 typedef struct Node Node;
@@ -27,8 +28,11 @@ typedef struct {
 
 typedef unsigned VarValue;
 
+typedef unsigned NameValue;
+
 typedef union {
 	VarValue var;
+	NameValue name;
 	LambdaValue lambda;
 	ApplValue appl;
 	DefValue def;
