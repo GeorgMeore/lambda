@@ -87,14 +87,14 @@ static Node *parse_term(Scanner *scanner)
 // LAMBDA ::= VAR '.' APPLICATION
 Node *parse_lambda(Scanner *scanner)
 {
-		Node *var = Node_new(VAR_NODE, Scanner_next(scanner));
-		Scanner_next(scanner); // skip '.'
-		Node *body = parse_application(scanner);
-		if (!body) {
-			Node_drop(var);
-			return NULL;
-		}
-		return Node_new(LAMBDA_NODE, var, body);
+	Node *var = Node_new(VAR_NODE, Scanner_next(scanner));
+	Scanner_next(scanner); // skip '.'
+	Node *body = parse_application(scanner);
+	if (!body) {
+		Node_drop(var);
+		return NULL;
+	}
+	return Node_new(LAMBDA_NODE, var, body);
 }
 
 // GROUP ::= '(' APPLICATION ')'
