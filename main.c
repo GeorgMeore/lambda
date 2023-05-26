@@ -98,19 +98,20 @@ int main()
 			continue;
 		}
 		Expr *expr = evaluate(ast, bindings);
-		if (expr) {
-			for (;;) {
-				if (tty) {
-					fprintf(stderr, "- ");
-				}
-				Expr_println(expr);
-				if (!reduce(expr)) {
-					break;
-				}
-			}
-			Expr_drop(expr);
-		}
 		Node_drop(ast);
+		if (!expr) {
+			continue;
+		}
+		for (;;) {
+			if (tty) {
+				fprintf(stderr, "- ");
+			}
+			Expr_println(expr);
+			if (!reduce(expr)) {
+				break;
+			}
+		}
+		Expr_drop(expr);
 	}
 	Table_clear(bindings);
 	return 0;
