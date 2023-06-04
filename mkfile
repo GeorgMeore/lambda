@@ -13,5 +13,5 @@ $PROG: $OBJ
 # generate dependency list
 <|$CC -MM $SRC
 
-clean:
+clean:V:
 	rm -f $OBJ $PROG
