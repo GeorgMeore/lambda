@@ -1,6 +1,9 @@
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
 
+#include "arena.h"
+
+
 typedef enum {
 	LAMBDA_NODE,
 	APPL_NODE,
@@ -45,7 +48,6 @@ struct Node {
 
 void  Node_print(Node *node);
 void  Node_println(Node *node);
-Node* Node_new(NodeType type, ...);
-void  Node_drop(Node *node);
+Node* Node_new(Arena *a, NodeType type, ...);
 
 #endif // NODE_INCLUDED
