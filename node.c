@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#include "arena.h"
+
 
 void Node_print(Node *node)
 {
@@ -45,31 +47,9 @@ void Node_println(Node *node)
 	putchar('\n');
 }
 
-void Node_drop(Node *node)
+Node *Node_new(Arena *a, NodeType type, ...)
 {
-	switch (node->type) {
-	case VAR_NODE:
-	case NAME_NODE:
-		break;
-	case APPL_NODE:
-		Node_drop(node->as.appl.left);
-		Node_drop(node->as.appl.right);
-		break;
-	case LAMBDA_NODE:
-		Node_drop(node->as.lambda.arg);
-		Node_drop(node->as.lambda.body);
-		break;
-	case DEF_NODE:
-		Node_drop(node->as.def.name);
-		Node_drop(node->as.def.value);
-		break;
-	}
-	free(node);
-}
-
-Node *Node_new(NodeType type, ...)
-{
-	Node *node = malloc(sizeof(*node));
+	Node *node = Arena_alloc(a, sizeof(*node));
 	va_list args;
 	va_start(args, type);
 	node->type = type;

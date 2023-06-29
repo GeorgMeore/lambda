@@ -7,7 +7,10 @@
 #include "node.h"
 #include "expr.h"
 #include "table.h"
+#include "arena.h"
 
+
+#define TMP_ARENA_PAGE_SIZE 1024
 
 // normal order reduction
 int reduce(Expr *expr)
@@ -85,6 +88,7 @@ int main()
 {
 	int tty = isatty(1);
 	Table bindings = {0};
+	Arena *tmp = Arena_new(TMP_ARENA_PAGE_SIZE);
 	for (;;) {
 		if (tty) {
 			fprintf(stderr, "> ");
@@ -93,12 +97,11 @@ int main()
 		if (!scanner) {
 			break;
 		}
-		Node *ast = parse(&scanner);
+		Node *ast = parse(tmp, &scanner);
 		if (!ast) {
 			continue;
 		}
 		Expr *expr = evaluate(ast, bindings);
-		Node_drop(ast);
 		if (!expr) {
 			continue;
 		}
@@ -112,7 +115,9 @@ int main()
 			}
 		}
 		Expr_drop(expr);
+		Arena_reset(tmp);
 	}
+	Arena_drop(tmp);
 	Table_clear(bindings);
 	return 0;
 }

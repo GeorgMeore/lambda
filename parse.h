@@ -3,7 +3,8 @@
 
 #include "scanner.h"
 #include "node.h"
+#include "arena.h"
 
-Node *parse(Scanner *scanner);
+Node *parse(Arena *a, Scanner *scanner);
 
 #endif // PARSE_INCLUDED
