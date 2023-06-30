@@ -89,7 +89,7 @@ int main()
 	int tty = isatty(1);
 	Table bindings = {0};
 	Arena *tmp = Arena_new(TMP_ARENA_PAGE_SIZE);
-	for (;;) {
+	for (;; Arena_reset(tmp)) {
 		if (tty) {
 			fprintf(stderr, "> ");
 		}
@@ -115,7 +115,6 @@ int main()
 			}
 		}
 		Expr_drop(expr);
-		Arena_reset(tmp);
 	}
 	Arena_drop(tmp);
 	Table_clear(bindings);
