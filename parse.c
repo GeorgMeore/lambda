@@ -19,7 +19,7 @@ static Node *parse_group(Arena *a, Scanner *scanner);
 Node *parse(Arena *a, Scanner *scanner)
 {
 	Node *node = NULL;
-	if (isupper(Scanner_peek(scanner)) && Scanner_peeek(scanner) == '=') {
+	if (isupper(Scanner_peek(scanner)) && Scanner_peek2(scanner) == '=') {
 		node = parse_definition(a, scanner);
 	} else {
 		node = parse_application(a, scanner);
@@ -73,7 +73,7 @@ static Node *parse_term(Arena *a, Scanner *scanner)
 		return Node_new(a, NAME_NODE, Scanner_next(scanner));
 	}
 	if (islower(Scanner_peek(scanner))) {
-		if (Scanner_peeek(scanner) == '.') {
+		if (Scanner_peek2(scanner) == '.') {
 			return parse_lambda(a, scanner);
 		}
 		return Node_new(a, VAR_NODE, Scanner_next(scanner));
