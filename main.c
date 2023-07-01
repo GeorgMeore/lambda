@@ -86,7 +86,7 @@ Expr *evaluate(Node *ast, Table bindings)
 
 int main()
 {
-	int tty = isatty(1);
+	int tty = isatty(0);
 	Table bindings = {0};
 	Arena *tmp = Arena_new(TMP_ARENA_PAGE_SIZE);
 	for (;; Arena_reset(tmp)) {
