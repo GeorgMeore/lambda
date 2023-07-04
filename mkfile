@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-g -Wall -Wextra
-SRC=main.c expr.c input.c scanner.c parse.c node.c table.c arena.c
+SRC=main.c expr.c scanner.c parse.c node.c table.c arena.c
 OBJ=${SRC:%.c=%.o}
 PROG=lambda
 

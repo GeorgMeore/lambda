@@ -31,6 +31,7 @@ Node *parse(Arena *a, Scanner *scanner)
 		fprintf(stderr, "error: unexpected character: '%c'\n", Scanner_peek(scanner));
 		return NULL;
 	}
+	Scanner_next(scanner);
 	return node;
 }
 
