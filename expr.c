@@ -12,7 +12,7 @@ void Expr_print(Expr *expr)
 		printf("%c", expr->as.var);
 		break;
 	case BOUND_VAR_EXPR:
-		printf("%d", expr->as.var);
+		printf("v%d", expr->as.var);
 		break;
 	case APPL_EXPR:
 		Expr_print(expr->as.appl.left);
@@ -25,7 +25,7 @@ void Expr_print(Expr *expr)
 		}
 		break;
 	case LAMBDA_EXPR:
-		printf("(%d.", expr->as.lambda.arg);
+		printf("(v%d.", expr->as.lambda.arg);
 		Expr_print(expr->as.lambda.body);
 		putchar(')');
 		break;
