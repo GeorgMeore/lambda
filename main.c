@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "input.h"
 #include "scanner.h"
 #include "parse.h"
 #include "node.h"
@@ -89,16 +88,16 @@ int main()
 	int tty = isatty(0);
 	Table bindings = {0};
 	Arena *tmp = Arena_new(TMP_ARENA_PAGE_SIZE);
-	for (;; Arena_reset(tmp)) {
+	for (Scanner scanner = Scanner_make(stdin);; Arena_reset(tmp)) {
 		if (tty) {
 			fprintf(stderr, "> ");
 		}
-		Scanner scanner = get_line();
-		if (!scanner) {
+		if (Scanner_peek(&scanner) == '\0') {
 			break;
 		}
 		Node *ast = parse(tmp, &scanner);
 		if (!ast) {
+			Scanner_skip_to_eol(&scanner);
 			continue;
 		}
 		Expr *expr = evaluate(ast, bindings);

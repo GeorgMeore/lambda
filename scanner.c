@@ -1,24 +1,55 @@
 #include "scanner.h"
 
+#include <stdio.h>
 
-const char *Scanner_cursor(Scanner *self)
+
+Scanner Scanner_make(FILE *file)
 {
-	return *self;
+	return (Scanner){.file = file, .count = 0};
 }
 
-char Scanner_next(Scanner *self)
+static void Scanner_getc(Scanner *self)
 {
-	char next = **self;
-	*self += 1;
-	return next;
+	int c = fgetc(self->file);
+	if (c == EOF || c == '\n') {
+		self->buf[self->count] = '\0';
+	} else {
+		self->buf[self->count] = c;
+	}
+	self->count += 1;
 }
 
-char Scanner_peek(Scanner *self)
+int Scanner_next(Scanner *self)
 {
-	return **self;
+	if (self->count == 0) {
+		Scanner_getc(self);
+	}
+	int c = self->buf[0];
+	self->buf[0] = self->buf[1];
+	self->count -= 1;
+	return c;
 }
 
-char Scanner_peek2(Scanner *self)
+void Scanner_skip_to_eol(Scanner *self)
 {
-	return *(*self + 1);
+	while (Scanner_peek(self) != '\0') {
+		Scanner_next(self);
+	}
+	Scanner_next(self);
+}
+
+int Scanner_peek(Scanner *self)
+{
+	while (self->count < 1) {
+		Scanner_getc(self);
+	}
+	return self->buf[0];
+}
+
+int Scanner_peek2(Scanner *self)
+{
+	while (self->count < 2) {
+		Scanner_getc(self);
+	}
+	return self->buf[1];
 }
