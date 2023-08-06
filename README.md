@@ -38,7 +38,7 @@ Application is left associative as usual.
 
 `Lambda ::= Variable . Term`
 
-Lambdas are defined as a 'Variable' and a `Term` separated by `.`.
+Lambdas are defined as a `Variable` and a `Term` separated by `.`.
 There is no `λ` or `\` at the beginning.
 
 `Name ::= A | B | ... | Z`
@@ -52,8 +52,8 @@ by the aliased term.
 You can provide aliases for terms.
 `Term` is not evaluated at the time of aliasing, only the syntactical analysis takes place.
 
-You also need to know that before analyzing `Term` the old value of binding (if there is one) is destroyed.
-That means that you cannot do stuff like that:
+You also need to know that before analyzing `Term` the old binding value (if there is one) is destroyed.
+That means that you cannot do stuff like this:
 ```
 S=a
 S=Sb
