@@ -73,5 +73,6 @@ Node *Node_new(Arena *a, NodeType type, ...)
 		node->as.def.value = va_arg(args, Node*);
 		break;
 	}
+	va_end(args);
 	return node;
 }
