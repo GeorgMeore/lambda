@@ -22,6 +22,16 @@ typedef struct {
 	Expr *right;
 } ApplExprValue;
 
+// NOTE: To solve the problem of bound variable name collisions,
+// this implementation uses automatic "renaming".
+// When a term is analyzed, bound variables are replaced with positive integers
+// that correspond to the nesting level of the binding lambda.
+// During a reduction step these values are appropriately recalculated.
+// (This is kind of like De Bruijn indices, but different)
+// Here are some examples:
+//   λx.xa               -> λ1.1a
+//   λx.λy.xy            -> λ1.λ2.12
+//   λx.(λf.fx)(λg.gx)fg -> λ1.(λ2.21)(λ2.21)fg
 typedef union {
 	VarExprValue var;
 	LambdaExprValue lambda;
