@@ -3,12 +3,25 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-
 // data alignment
 #define WORDSIZE sizeof(size_t)
 #define ALIGN(v) (v % WORDSIZE == 0 ? v : v + WORDSIZE - v % WORDSIZE)
 
-Page *Page_new(size_t page_size)
+typedef struct Page Page;
+
+struct Page {
+	Page   *next;
+	char   *data;
+	size_t taken;
+};
+
+static void Page_drop(Page *self)
+{
+	free(self->data);
+	free(self);
+}
+
+static Page *Page_new(size_t page_size)
 {
 	Page *self = malloc(sizeof(*self));
 	if (!self) {
@@ -24,11 +37,10 @@ Page *Page_new(size_t page_size)
 	return self;
 }
 
-void Page_drop(Page *self)
-{
-	free(self->data);
-	free(self);
-}
+struct Arena {
+	Page   *first;
+	size_t page_size;
+};
 
 Arena *Arena_new(size_t page_size)
 {
