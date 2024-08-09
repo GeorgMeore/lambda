@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g -Wall -Wextra
+CFLAGS=-g -Wall -Wextra -fsanitize=address,undefined
 SRC=main.c expr.c scanner.c parse.c node.c table.c arena.c
 OBJ=${SRC:%.c=%.o}
 PROG=lambda
@@ -8,7 +8,7 @@ PROG=lambda
 	$CC $CFLAGS -c $stem.c
 
 $PROG: $OBJ
-	cc -o $target $prereq
+	$CC $CFLAGS -o $target $prereq
 
 # generate dependency list
 <|$CC -MM $SRC
