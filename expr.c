@@ -138,12 +138,8 @@ static void Expr_sub_bound(Expr *expr, unsigned var, Expr *val)
 		}
 		break;
 	case APPL_EXPR:
-		Expr *left_copy = Expr_copy(val);
-		Expr_sub_bound(expr->as.appl.left, var, left_copy);
-		Expr_drop(left_copy);
-		Expr *right_copy = Expr_copy(val);
-		Expr_sub_bound(expr->as.appl.right, var, right_copy);
-		Expr_drop(right_copy);
+		Expr_sub_bound(expr->as.appl.left, var, val);
+		Expr_sub_bound(expr->as.appl.right, var, val);
 		break;
 	case LAMBDA_EXPR:
 		Expr *copy = Expr_copy(val);
