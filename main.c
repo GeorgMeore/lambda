@@ -41,7 +41,7 @@ Expr *analyze(Node *node, Table bindings)
 			Expr_drop(arg);
 			return NULL;
 		}
-		return Lambda_new(arg, body );
+		return Lambda_new(arg, body);
 	case APPL_NODE:
 		Expr *left = analyze(node->as.appl.left, bindings);
 		if (!left) {
