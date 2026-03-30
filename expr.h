@@ -38,6 +38,7 @@ typedef union {
 	ApplExprValue appl;
 } ExprValue;
 
+// NOTE: all expressions are trees, no nodes are shared between subexpressions
 struct Expr {
 	ExprType type;
 	ExprValue as;
