@@ -6,12 +6,11 @@ Just for fun!
 
 ## Building.
 
-To build this thing you will need `gcc`, `libc` and plan9's `mk`.
+To build this thing you will need `gcc`, `libc` and `sh`.
 
 ```
 $ git clone REPO lambda
-$ cd lambda
-$ mk
+$ ./build.sh
 ```
 
 ## Running.
