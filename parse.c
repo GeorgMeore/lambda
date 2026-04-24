@@ -103,9 +103,10 @@ static Node *parse_group(Arena *a, Scanner *scanner)
 	if (!node) {
 		return NULL;
 	}
-	if (Scanner_next(scanner) != ')') {
-		fprintf(stderr, "error: ')' expected\n");
+	if (Scanner_peek(scanner) != ')') {
+		fprintf(stderr, "error: ')' expected, got '%c'\n", Scanner_peek(scanner));
 		return NULL;
 	}
+	Scanner_next(scanner);
 	return node;
 }
