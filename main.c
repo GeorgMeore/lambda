@@ -74,6 +74,7 @@ Expr *evaluate(Node *ast, Table bindings)
 		unsigned name = ast->as.def.name->as.name;
 		if (Table_has(bindings, name)) {
 			Expr_drop(Table_lookup(bindings, name));
+			Table_set(bindings, name, NULL);
 		}
 		Expr *value = analyze(ast->as.def.value, bindings);
 		Table_set(bindings, name, value);
