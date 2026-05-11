@@ -72,14 +72,14 @@ the interpreter shows you intermediate expression states prefixed with `- `.
 > ab
 - ab
 > x.x
-- (1.1)
+- (v1.v1)
 > x.xa
-- (1.1a)
+- (v1.v1a)
 > (x.x)a
-- (1.1)a
+- (v1.v1)a
 - a
 > S=x.x
 > Sa
-- (1.1)a
+- (v1.v1)a
 - a
 ```
